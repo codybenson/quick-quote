@@ -9,7 +9,7 @@
   #quote-calculator .checkbox-line .price{margin-left:auto;white-space:nowrap}
   #quote-calculator .checkbox-line .hint{flex:1 1 100%;margin-left:calc(1.75rem);font-size:.82rem}
   #quote-calculator .field-row{display:flex;align-items:center;gap:.5rem}
-  #quote-calculator select,#quote-calculator input[type=number],#quote-calculator input[type=text]{width:100%;padding:.65rem;border:1px solid var(--ink);border-radius:6px;font-size:1rem;background:#fff;color:var(--evergreen)}
+  #quote-calculator select,#quote-calculator input[type=number],#quote-calculator input[type=text]{width:100%;max-width:100%;box-sizing:border-box;padding:.65rem;border:1px solid var(--ink);border-radius:6px;font-size:1rem;background:#fff;color:var(--evergreen)}
   #quote-calculator input[type=checkbox]{transform:scale(1.1);margin-right:.5rem;vertical-align:middle;accent-color:var(--evergreen)}
   .muted{opacity:.6}
   .hint{font-size:.85rem;margin-left:.5rem;color:var(--evergreen)}
@@ -17,9 +17,11 @@
   .custom-items h4{margin:0 0 .35rem 0;font-size:1.05rem;color:var(--evergreen)}
   .custom-items small{display:block;margin-bottom:.75rem;color:var(--ink);opacity:.8}
   .custom-item{display:flex;flex-wrap:wrap;gap:.65rem;align-items:flex-end;margin-bottom:.85rem}
-  .custom-item input[type=text]{flex:1 1 220px}
-  .custom-item input[type=number]{flex:0 0 150px}
-  .custom-item select{flex:0 0 210px}
+  .field-row input[type=number],
+  .field-row input[type=text]{flex:1 1 auto;width:auto;min-width:0}
+  .custom-item input[type=text]{flex:1 1 210px;min-width:0}
+  .custom-item input[type=number]{flex:0 1 140px;min-width:0}
+  .custom-item select{flex:0 1 190px;min-width:0}
   .custom-item button{flex:0 0 auto}
   .custom-items .add-item-btn{background:transparent;color:var(--evergreen);border:1px solid var(--evergreen);padding:.55rem .85rem;border-radius:6px;font-weight:600;cursor:pointer}
   .custom-items .add-item-btn:hover{background:var(--evergreen);color:var(--canvas)}
@@ -92,6 +94,7 @@
   .card .body .row:nth-child(even){background:#fff9f0}
   .card .totals-block{padding:.08in .15in .12in .35in;background:#ffffff;border-top:1px solid var(--evergreen)}
   .total-line{display:flex;justify-content:space-between;font-weight:700;margin:.05in 0 .06in}
+  .meta-line{display:flex;justify-content:space-between;margin:.05in 0;font-size:.95rem}
   .thin-rule{border:0;border-top:1px solid var(--ink);opacity:.5;margin:.06in 0}
   .indent{display:flex;justify-content:space-between;font-style:italic;margin:.04in 0 .02in;padding-left:.15in}
 
@@ -199,6 +202,73 @@
 
   function isStarterBundle(status,pages,gbpOn){return status==='New'&&pages===5&&gbpOn}
   const PRICE_LITE=850,PRICE_STANDARD=1450,PRICE_PREMIUM=2950,PRICE_PER_PAGE=150,PRICE_STARTER_BDL=1950,PRICE_GBP=325,PRICE_PPC_SETUP=375,PRICE_PHOTO=300,PRICE_BRAND=350;
+  const TAX_RATE=0.0825;
+
+  const customList=document.getElementById('customItemsList');
+  const addCustomItemBtn=document.getElementById('addCustomItemBtn');
+
+  function createCustomItemRow(){
+    const row=document.createElement('div');
+    row.className='custom-item';
+
+    const desc=document.createElement('input');
+    desc.type='text';
+    desc.placeholder='Item description';
+    desc.setAttribute('data-field','description');
+    desc.setAttribute('aria-label','Custom item description');
+
+    const price=document.createElement('input');
+    price.type='number';
+    price.min='0';
+    price.step='0.01';
+    price.placeholder='Price';
+    price.setAttribute('data-field','price');
+    price.setAttribute('aria-label','Custom item price');
+
+    const type=document.createElement('select');
+    type.setAttribute('data-field','type');
+    type.setAttribute('aria-label','Custom item billing type');
+    const optOne=document.createElement('option');
+    optOne.value='one-time';
+    optOne.textContent='One-Time Project Fee';
+    const optMonthly=document.createElement('option');
+    optMonthly.value='monthly';
+    optMonthly.textContent='Monthly Service Fee';
+    type.appendChild(optOne);
+    type.appendChild(optMonthly);
+
+    const remove=document.createElement('button');
+    remove.type='button';
+    remove.className='remove-item';
+    remove.textContent='Remove';
+    remove.setAttribute('aria-label','Remove custom item');
+    remove.addEventListener('click',()=>{row.remove();});
+
+    row.appendChild(desc);
+    row.appendChild(price);
+    row.appendChild(type);
+    row.appendChild(remove);
+
+    return row;
+  }
+
+  function getCustomItems(){
+    if(!customList)return[];
+    return Array.from(customList.querySelectorAll('.custom-item')).map(row=>{
+      const description=(row.querySelector('[data-field="description"]')?.value||'').trim();
+      const priceVal=row.querySelector('[data-field="price"]')?.value||'';
+      const price=parseFloat(priceVal);
+      const type=(row.querySelector('[data-field="type"]')?.value)||'one-time';
+      return {description,price:isNaN(price)?0:price,type};
+    }).filter(item=>item.price>0);
+  }
+
+  if(customList){
+    customList.appendChild(createCustomItemRow());
+    addCustomItemBtn?.addEventListener('click',()=>{
+      customList.appendChild(createCustomItemRow());
+    });
+  }
 
   const customList=document.getElementById('customItemsList');
   const addCustomItemBtn=document.getElementById('addCustomItemBtn');
@@ -412,6 +482,14 @@
     const dueComplete=(buildP*.5)+(photoOn?photoP:0)+(customOneTimeTotal*.5);
 
     const monthlyTotal=maintP+ppcMgmtP+customMonthlyTotal;
+    const oneTimeTax=oneTimeTotal*TAX_RATE;
+    const oneTimeTotalWithTax=oneTimeTotal+oneTimeTax;
+    const dueTodayTax=oneTimeTotal>0?oneTimeTax*(dueToday/oneTimeTotal):0;
+    const dueCompleteTax=oneTimeTax-dueTodayTax;
+    const dueTodayWithTax=dueToday+dueTodayTax;
+    const dueCompleteWithTax=dueComplete+dueCompleteTax;
+    const monthlyTax=monthlyTotal*TAX_RATE;
+    const monthlyTotalWithTax=monthlyTotal+monthlyTax;
 
     const hasOneTime=oneTimeTotal>0;
     const hasMonthly=monthlyTotal>0;
@@ -451,11 +529,18 @@
       if(brandOn&&brandP>0){body.appendChild(buildRow('Branding','$'+money(brandP))); }
       customOneTimeItems.forEach(item=>{body.appendChild(buildRow(item.description||'Custom Item','$'+money(item.price)));});
       const totals=document.createElement('div');totals.className='totals-block';
-      const t1=document.createElement('div');t1.className='total-line';t1.innerHTML='<span>Total</span><span>$'+money(oneTimeTotal)+'</span>';
+      const subtotal=document.createElement('div');subtotal.className='total-line';subtotal.innerHTML='<span>Subtotal</span><span>$'+money(oneTimeTotal)+'</span>';
+      totals.appendChild(subtotal);
+      if(oneTimeTax>0){
+        const taxLine=document.createElement('div');taxLine.className='meta-line';taxLine.innerHTML='<span>Estimated Tax (8.25%)</span><span>$'+money(oneTimeTax)+'</span>';
+        totals.appendChild(taxLine);
+      }
+      const totalWithTax=document.createElement('div');totalWithTax.className='total-line';totalWithTax.innerHTML='<span>Total w/ Tax</span><span>$'+money(oneTimeTotalWithTax)+'</span>';
+      totals.appendChild(totalWithTax);
       const hr=document.createElement('hr');hr.className='thin-rule';
-      const i1=document.createElement('div');i1.className='indent';i1.innerHTML='<span>Due Today</span><span>$'+money(dueToday)+'</span>';
-      const i2=document.createElement('div');i2.className='indent';i2.innerHTML='<span>Due at Completion</span><span>$'+money(dueComplete)+'</span>';
-      totals.appendChild(t1);totals.appendChild(hr);totals.appendChild(i1);totals.appendChild(i2);
+      const i1=document.createElement('div');i1.className='indent';i1.innerHTML='<span>Due Today (est. incl. tax)</span><span>$'+money(dueTodayWithTax)+'</span>';
+      const i2=document.createElement('div');i2.className='indent';i2.innerHTML='<span>Due at Completion (est. incl. tax)</span><span>$'+money(dueCompleteWithTax)+'</span>';
+      totals.appendChild(hr);totals.appendChild(i1);totals.appendChild(i2);
       card.appendChild(thead);card.appendChild(body);card.appendChild(totals);
       main.appendChild(card);
     }
@@ -467,7 +552,15 @@
       if(maintOn&&maintP>0){body.appendChild(buildRow('Website Maintenance','$'+money(maintP)+'/mo')); }
       if(ppcMgmtOn&&ppcMgmtP>0){body.appendChild(buildRow('PPC Management'+(budget?(' (on $'+money(budget)+' ad budget)'):'') ,'$'+money(ppcMgmtP)+'/mo')); }
       customMonthlyItems.forEach(item=>{body.appendChild(buildRow(item.description||'Custom Item','$'+money(item.price)+'/mo'));});
-      const totals=document.createElement('div');totals.className='totals-block';const i1=document.createElement('div');i1.className='indent';i1.style.fontWeight='700';i1.innerHTML='<span>Total Monthly Retainer</span><span>$'+money(monthlyTotal)+'/mo</span>';totals.appendChild(i1);
+      const totals=document.createElement('div');totals.className='totals-block';
+      const subtotal=document.createElement('div');subtotal.className='total-line';subtotal.innerHTML='<span>Subtotal</span><span>$'+money(monthlyTotal)+'/mo</span>';
+      totals.appendChild(subtotal);
+      if(monthlyTax>0){
+        const taxLine=document.createElement('div');taxLine.className='meta-line';taxLine.innerHTML='<span>Estimated Tax (8.25%)</span><span>$'+money(monthlyTax)+'/mo</span>';
+        totals.appendChild(taxLine);
+      }
+      const totalWithTax=document.createElement('div');totalWithTax.className='total-line';totalWithTax.innerHTML='<span>Total Monthly Retainer (est. incl. tax)</span><span>$'+money(monthlyTotalWithTax)+'/mo</span>';
+      totals.appendChild(totalWithTax);
       card.appendChild(thead);card.appendChild(body);card.appendChild(totals);
       main.appendChild(card);
     }
