@@ -262,6 +262,7 @@
         const type=(row.querySelector('[data-field="type"]')?.value)||'one-time';
         return {description,price:isNaN(price)?0:price,type};
       }).filter(item=>item.price>0);
+
     }
 
     if(customList){
