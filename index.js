@@ -3,19 +3,23 @@
   :root{--evergreen:#2A5441;--canvas:#FEFAE0;--harvest:#DDA15E;--ink:#2A5441}
   #quote-calculator{font-family:'Poppins',sans-serif;background-color:var(--canvas);color:var(--ink);padding:1.5rem;border-radius:12px;max-width:720px;margin:1rem auto;border:1px solid var(--ink)}
   #quote-calculator h3{font-size:1.6rem;margin:0 0 1rem 0;color:var(--evergreen)}
-  #quote-calculator label{display:block;margin-bottom:.75rem;font-weight:500}
+  #quote-calculator label{display:block;margin-bottom:1rem;font-weight:500}
+  #quote-calculator .checkbox-line{display:flex;align-items:center;gap:.65rem;padding:.65rem .75rem;border:1px solid rgba(42,84,65,.2);border-radius:6px;background:#fff;margin-bottom:.85rem;flex-wrap:wrap}
+  #quote-calculator .checkbox-line input[type=checkbox]{margin:0}
+  #quote-calculator .checkbox-line .price{margin-left:auto;white-space:nowrap}
+  #quote-calculator .checkbox-line .hint{flex:1 1 100%;margin-left:calc(1.75rem);font-size:.82rem}
   #quote-calculator .field-row{display:flex;align-items:center;gap:.5rem}
-  #quote-calculator select,#quote-calculator input[type=number],#quote-calculator input[type=text]{width:95%;padding:.6rem;border:1px solid var(--ink);border-radius:6px;font-size:1rem;background:#fff;color:var(--evergreen)}
+  #quote-calculator select,#quote-calculator input[type=number],#quote-calculator input[type=text]{width:100%;padding:.65rem;border:1px solid var(--ink);border-radius:6px;font-size:1rem;background:#fff;color:var(--evergreen)}
   #quote-calculator input[type=checkbox]{transform:scale(1.1);margin-right:.5rem;vertical-align:middle;accent-color:var(--evergreen)}
   .muted{opacity:.6}
   .hint{font-size:.85rem;margin-left:.5rem;color:var(--evergreen)}
-  .custom-items{margin-top:1.5rem;padding:1rem;border:1px dashed var(--evergreen);border-radius:8px;background:#fff9f0}
+  .custom-items{margin-top:1.75rem;padding:1rem;border:1px dashed var(--evergreen);border-radius:8px;background:#fff9f0}
   .custom-items h4{margin:0 0 .35rem 0;font-size:1.05rem;color:var(--evergreen)}
   .custom-items small{display:block;margin-bottom:.75rem;color:var(--ink);opacity:.8}
-  .custom-item{display:flex;flex-wrap:wrap;gap:.5rem;align-items:flex-end;margin-bottom:.75rem}
-  .custom-item input[type=text]{flex:1 1 200px}
-  .custom-item input[type=number]{flex:0 0 140px}
-  .custom-item select{flex:0 0 200px}
+  .custom-item{display:flex;flex-wrap:wrap;gap:.65rem;align-items:flex-end;margin-bottom:.85rem}
+  .custom-item input[type=text]{flex:1 1 220px}
+  .custom-item input[type=number]{flex:0 0 150px}
+  .custom-item select{flex:0 0 210px}
   .custom-item button{flex:0 0 auto}
   .custom-items .add-item-btn{background:transparent;color:var(--evergreen);border:1px solid var(--evergreen);padding:.55rem .85rem;border-radius:6px;font-weight:600;cursor:pointer}
   .custom-items .add-item-btn:hover{background:var(--evergreen);color:var(--canvas)}
@@ -23,8 +27,27 @@
   .custom-item .remove-item:hover{background:var(--harvest);color:var(--canvas)}
   .custom-output-list{margin:.5rem 0}
   .custom-output-list .output-line{margin-bottom:.35rem}
-  @media (max-width:700px){
-    .custom-item input[type=number],.custom-item select{flex:1 1 140px}
+  @media (max-width:720px){
+    #quote-calculator{padding:1.25rem}
+    #quote-calculator h3{font-size:1.45rem;text-align:center}
+  }
+  @media (max-width:600px){
+    #quote-calculator{padding:1rem}
+    #quote-calculator label{margin-bottom:.85rem}
+    #quote-calculator .field-row{flex-direction:column;align-items:stretch;gap:.35rem}
+    #quote-calculator .checkbox-line{padding:.6rem .7rem}
+    #quote-calculator .checkbox-line input[type=checkbox]{margin-top:.15rem}
+    #quote-calculator .checkbox-line .price{margin-left:0;width:100%;font-weight:600;display:block}
+    #quote-calculator .checkbox-line .hint{margin-left:0}
+    .custom-items{padding:.85rem}
+    .custom-items small{margin-bottom:.6rem}
+    .custom-item{flex-direction:column;align-items:stretch}
+    .custom-item input[type=text],
+    .custom-item input[type=number],
+    .custom-item select,
+    .custom-item button{flex:1 1 auto;width:100%}
+    .custom-item button{align-self:flex-end}
+    .quote-actions button{font-size:.95rem}
   }
   #quote-calculator button{background-color:var(--evergreen);color:var(--canvas);border:none;padding:.8rem;border-radius:6px;font-weight:600;cursor:pointer;font-size:1rem;margin-top:1rem}
   #quote-calculator button:hover{filter:brightness(.9)}
@@ -108,6 +131,10 @@
     </div>
   </label>
 
+  <label>Current Ad Budget
+    <input type="number" id="adBudget" min="0" value="0" placeholder="e.g., 1500">
+  </label>
+
   <label class="checkbox-line"><input type="checkbox" id="GBP">Google Business Profile <span class="price">+ $325</span></label>
   <label class="checkbox-line"><input type="checkbox" id="PPCSetup">PPC Campaign Setup <span class="price">+ $375</span></label>
   <label id="seoRow" class="checkbox-line"><input type="checkbox" id="SEO">SEO Tune-Up <span id="seoPriceLabel" class="price">+ $0</span><span id="seoHint" class="hint"></span></label>
@@ -124,10 +151,6 @@
     <div id="customItemsList"></div>
     <button type="button" id="addCustomItemBtn" class="add-item-btn">Add Custom Item</button>
   </div>
-
-  <label>Current Ad Budget
-    <input type="number" id="adBudget" min="0" value="0">
-  </label>
 
   <button type="button" id="calculateBtn">Calculate Quote</button>
   <hr>
