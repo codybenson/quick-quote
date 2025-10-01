@@ -3,12 +3,52 @@
   :root{--evergreen:#2A5441;--canvas:#FEFAE0;--harvest:#DDA15E;--ink:#2A5441}
   #quote-calculator{font-family:'Poppins',sans-serif;background-color:var(--canvas);color:var(--ink);padding:1.5rem;border-radius:12px;max-width:720px;margin:1rem auto;border:1px solid var(--ink)}
   #quote-calculator h3{font-size:1.6rem;margin:0 0 1rem 0;color:var(--evergreen)}
-  #quote-calculator label{display:block;margin-bottom:.75rem;font-weight:500}
+  #quote-calculator label{display:block;margin-bottom:1rem;font-weight:500}
+  #quote-calculator .checkbox-line{display:flex;align-items:center;gap:.65rem;padding:.65rem .75rem;border:1px solid rgba(42,84,65,.2);border-radius:6px;background:#fff;margin-bottom:.85rem;flex-wrap:wrap}
+  #quote-calculator .checkbox-line input[type=checkbox]{margin:0}
+  #quote-calculator .checkbox-line .price{margin-left:auto;white-space:nowrap}
+  #quote-calculator .checkbox-line .hint{flex:1 1 100%;margin-left:calc(1.75rem);font-size:.82rem}
   #quote-calculator .field-row{display:flex;align-items:center;gap:.5rem}
-  #quote-calculator select,#quote-calculator input[type=number],#quote-calculator input[type=text]{width:95%;padding:.6rem;border:1px solid var(--ink);border-radius:6px;font-size:1rem;background:#fff;color:var(--evergreen)}
+  #quote-calculator select,#quote-calculator input[type=number],#quote-calculator input[type=text]{width:100%;padding:.65rem;border:1px solid var(--ink);border-radius:6px;font-size:1rem;background:#fff;color:var(--evergreen)}
   #quote-calculator input[type=checkbox]{transform:scale(1.1);margin-right:.5rem;vertical-align:middle;accent-color:var(--evergreen)}
   .muted{opacity:.6}
   .hint{font-size:.85rem;margin-left:.5rem;color:var(--evergreen)}
+  .custom-items{margin-top:1.75rem;padding:1rem;border:1px dashed var(--evergreen);border-radius:8px;background:#fff9f0}
+  .custom-items h4{margin:0 0 .35rem 0;font-size:1.05rem;color:var(--evergreen)}
+  .custom-items small{display:block;margin-bottom:.75rem;color:var(--ink);opacity:.8}
+  .custom-item{display:flex;flex-wrap:wrap;gap:.65rem;align-items:flex-end;margin-bottom:.85rem}
+  .custom-item input[type=text]{flex:1 1 220px}
+  .custom-item input[type=number]{flex:0 0 150px}
+  .custom-item select{flex:0 0 210px}
+  .custom-item button{flex:0 0 auto}
+  .custom-items .add-item-btn{background:transparent;color:var(--evergreen);border:1px solid var(--evergreen);padding:.55rem .85rem;border-radius:6px;font-weight:600;cursor:pointer}
+  .custom-items .add-item-btn:hover{background:var(--evergreen);color:var(--canvas)}
+  .custom-item .remove-item{background:transparent;color:var(--harvest);border:1px solid var(--harvest);padding:.5rem .75rem;border-radius:6px;font-weight:600;cursor:pointer}
+  .custom-item .remove-item:hover{background:var(--harvest);color:var(--canvas)}
+  .custom-output-list{margin:.5rem 0}
+  .custom-output-list .output-line{margin-bottom:.35rem}
+  @media (max-width:720px){
+    #quote-calculator{padding:1.25rem}
+    #quote-calculator h3{font-size:1.45rem;text-align:center}
+  }
+  @media (max-width:600px){
+    #quote-calculator{padding:1rem}
+    #quote-calculator label{margin-bottom:.85rem}
+    #quote-calculator .field-row{flex-direction:column;align-items:stretch;gap:.35rem}
+    #quote-calculator .checkbox-line{padding:.6rem .7rem}
+    #quote-calculator .checkbox-line input[type=checkbox]{margin-top:.15rem}
+    #quote-calculator .checkbox-line .price{margin-left:0;width:100%;font-weight:600;display:block}
+    #quote-calculator .checkbox-line .hint{margin-left:0}
+    .custom-items{padding:.85rem}
+    .custom-items small{margin-bottom:.6rem}
+    .custom-item{flex-direction:column;align-items:stretch}
+    .custom-item input[type=text],
+    .custom-item input[type=number],
+    .custom-item select,
+    .custom-item button{flex:1 1 auto;width:100%}
+    .custom-item button{align-self:flex-end}
+    .quote-actions button{font-size:.95rem}
+  }
   #quote-calculator button{background-color:var(--evergreen);color:var(--canvas);border:none;padding:.8rem;border-radius:6px;font-weight:600;cursor:pointer;font-size:1rem;margin-top:1rem}
   #quote-calculator button:hover{filter:brightness(.9)}
   #calculateBtn{width:100%}
@@ -91,6 +131,10 @@
     </div>
   </label>
 
+  <label>Current Ad Budget
+    <input type="number" id="adBudget" min="0" value="0" placeholder="e.g., 1500">
+  </label>
+
   <label class="checkbox-line"><input type="checkbox" id="GBP">Google Business Profile <span class="price">+ $325</span></label>
   <label class="checkbox-line"><input type="checkbox" id="PPCSetup">PPC Campaign Setup <span class="price">+ $375</span></label>
   <label id="seoRow" class="checkbox-line"><input type="checkbox" id="SEO">SEO Tune-Up <span id="seoPriceLabel" class="price">+ $0</span><span id="seoHint" class="hint"></span></label>
@@ -101,9 +145,12 @@
   <label class="checkbox-line"><input type="checkbox" id="maintenance">Ongoing Maintenance <span id="maintenancePriceLabel" class="price">+ $0/mo</span></label>
   <label class="checkbox-line"><input type="checkbox" id="PPCManagement">Ongoing PPC Management <span id="ppcMgmtPriceLabel" class="price">+ $0/mo</span></label>
 
-  <label>Current Ad Budget
-    <input type="number" id="adBudget" min="0" value="0">
-  </label>
+  <div class="custom-items" aria-labelledby="customItemsTitle">
+    <h4 id="customItemsTitle">Custom Line Items</h4>
+    <small>Add bespoke services or charges that should be part of this quote.</small>
+    <div id="customItemsList"></div>
+    <button type="button" id="addCustomItemBtn" class="add-item-btn">Add Custom Item</button>
+  </div>
 
   <button type="button" id="calculateBtn">Calculate Quote</button>
   <hr>
@@ -111,6 +158,7 @@
   <div class="output-container">
     <div class="output-block">
       <div class="output-title">One-Time Project Fees</div>
+      <div id="customOneTimeOutput" class="custom-output-list"></div>
       <div class="output-line total"><span>Total:</span><span>$<span id="oneTimeTotal">0</span></span></div>
       <div class="output-line"><span>Due Today:</span><span>$<span id="dueToday">0</span></span></div>
       <div class="output-line"><span>Due at Completion:</span><span>$<span id="dueCompletion">0</span></span></div>
@@ -119,6 +167,7 @@
       <div class="output-title">Monthly Service Fees</div>
       <div class="output-line"><span>Maintenance:</span><span>$<span id="maintenanceCost">0</span>/mo</span></div>
       <div class="output-line"><span>PPC Management:</span><span>$<span id="ppcCost">0</span>/mo</span></div>
+      <div id="customMonthlyOutput" class="custom-output-list"></div>
       <div class="output-line total"><span>Monthly Retainer:</span><span>$<span id="monthlyTotalCost">0</span>/mo</span></div>
     </div>
   </div>
@@ -134,7 +183,12 @@
   const getBool=id=>document.getElementById(id).checked;
   const getNum=id=>parseInt(document.getElementById(id).value)||0;
   const getSel=id=>document.getElementById(id).value;
-  const money=n=>Number(n||0).toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:0});
+  const money=n=>{
+    const num=Number(n||0);
+    const rounded=Math.round((num+Number.EPSILON)*100)/100;
+    const hasCents=!Number.isInteger(rounded);
+    return rounded.toLocaleString(undefined,{minimumFractionDigits:hasCents?2:0,maximumFractionDigits:hasCents?2:0});
+  };
 
   const tipBtn=()=>document.getElementById('pagePricingBtn');
   const tipBox=()=>document.getElementById('pagePricingTip');
@@ -145,6 +199,72 @@
 
   function isStarterBundle(status,pages,gbpOn){return status==='New'&&pages===5&&gbpOn}
   const PRICE_LITE=850,PRICE_STANDARD=1450,PRICE_PREMIUM=2950,PRICE_PER_PAGE=150,PRICE_STARTER_BDL=1950,PRICE_GBP=325,PRICE_PPC_SETUP=375,PRICE_PHOTO=300,PRICE_BRAND=350;
+
+  const customList=document.getElementById('customItemsList');
+  const addCustomItemBtn=document.getElementById('addCustomItemBtn');
+
+  function createCustomItemRow(){
+    const row=document.createElement('div');
+    row.className='custom-item';
+
+    const desc=document.createElement('input');
+    desc.type='text';
+    desc.placeholder='Item description';
+    desc.setAttribute('data-field','description');
+    desc.setAttribute('aria-label','Custom item description');
+
+    const price=document.createElement('input');
+    price.type='number';
+    price.min='0';
+    price.step='0.01';
+    price.placeholder='Price';
+    price.setAttribute('data-field','price');
+    price.setAttribute('aria-label','Custom item price');
+
+    const type=document.createElement('select');
+    type.setAttribute('data-field','type');
+    type.setAttribute('aria-label','Custom item billing type');
+    const optOne=document.createElement('option');
+    optOne.value='one-time';
+    optOne.textContent='One-Time Project Fee';
+    const optMonthly=document.createElement('option');
+    optMonthly.value='monthly';
+    optMonthly.textContent='Monthly Service Fee';
+    type.appendChild(optOne);
+    type.appendChild(optMonthly);
+
+    const remove=document.createElement('button');
+    remove.type='button';
+    remove.className='remove-item';
+    remove.textContent='Remove';
+    remove.setAttribute('aria-label','Remove custom item');
+    remove.addEventListener('click',()=>{row.remove();});
+
+    row.appendChild(desc);
+    row.appendChild(price);
+    row.appendChild(type);
+    row.appendChild(remove);
+
+    return row;
+  }
+
+  function getCustomItems(){
+    if(!customList)return[];
+    return Array.from(customList.querySelectorAll('.custom-item')).map(row=>{
+      const description=(row.querySelector('[data-field="description"]')?.value||'').trim();
+      const priceVal=row.querySelector('[data-field="price"]')?.value||'';
+      const price=parseFloat(priceVal);
+      const type=(row.querySelector('[data-field="type"]')?.value)||'one-time';
+      return {description,price:isNaN(price)?0:price,type};
+    }).filter(item=>item.price>0);
+  }
+
+  if(customList){
+    customList.appendChild(createCustomItemRow());
+    addCustomItemBtn?.addEventListener('click',()=>{
+      customList.appendChild(createCustomItemRow());
+    });
+  }
 
   function websiteCreation(status,p){
     if(status!=='New'||p<=0)return 0;
@@ -186,6 +306,11 @@
     const ppcMgmtOn=getBool('PPCManagement');
     const budget=getNum('adBudget');
     const useBundle=isStarterBundle(status,pages,gbpOn);
+    const customItems=getCustomItems();
+    const customOneTimeItems=customItems.filter(item=>item.type==='one-time');
+    const customMonthlyItems=customItems.filter(item=>item.type==='monthly');
+    const customOneTimeTotal=customOneTimeItems.reduce((sum,item)=>sum+item.price,0);
+    const customMonthlyTotal=customMonthlyItems.reduce((sum,item)=>sum+item.price,0);
 
     let buildP=websiteCreation(status,pages);
     let gbpP=calcGBP(gbpOn);
@@ -198,14 +323,14 @@
     const brandP=calcBranding(brandOn);
 
     const fixedOneTime=gbpP+ppcSetupP+seoP+altP+catP+brandP;
-    const oneTimeTotal=buildP+fixedOneTime+photoP;
+    const oneTimeTotal=buildP+fixedOneTime+photoP+customOneTimeTotal;
 
-    const dueToday=(buildP*.5)+fixedOneTime;
-    const dueComplete=(buildP*.5)+(photoOn?photoP:0);
+    const dueToday=(buildP*.5)+fixedOneTime+(customOneTimeTotal*.5);
+    const dueComplete=(buildP*.5)+(photoOn?photoP:0)+(customOneTimeTotal*.5);
 
     const maintP=calcMaintenance(maintOn,pages);
     const ppcMgmtP=calcPPCMgmt(ppcMgmtOn,budget);
-    const monthlyTotal=maintP+ppcMgmtP;
+    const monthlyTotal=maintP+ppcMgmtP+customMonthlyTotal;
 
     document.getElementById('seoPriceLabel').textContent=(status==='Existing'&&seoOn)?`+ $${money(seoP)}`:(status==='Existing'?'+ $0':'Existing sites only');
     document.getElementById('maintenancePriceLabel').textContent=`+ $${money(maintP)}/mo`;
@@ -216,6 +341,30 @@
     document.getElementById('maintenanceCost').textContent=money(maintP);
     document.getElementById('ppcCost').textContent=money(ppcMgmtP);
     document.getElementById('monthlyTotalCost').textContent=money(monthlyTotal);
+
+    const customOneTimeOutput=document.getElementById('customOneTimeOutput');
+    if(customOneTimeOutput){
+      customOneTimeOutput.innerHTML='';
+      customOneTimeItems.forEach(item=>{
+        const line=document.createElement('div');
+        line.className='output-line';
+        line.innerHTML=`<span>${item.description||'Custom Item'}</span><span>$${money(item.price)}</span>`;
+        customOneTimeOutput.appendChild(line);
+      });
+      customOneTimeOutput.style.display=customOneTimeItems.length?'':'none';
+    }
+
+    const customMonthlyOutput=document.getElementById('customMonthlyOutput');
+    if(customMonthlyOutput){
+      customMonthlyOutput.innerHTML='';
+      customMonthlyItems.forEach(item=>{
+        const line=document.createElement('div');
+        line.className='output-line';
+        line.innerHTML=`<span>${item.description||'Custom Item'}</span><span>$${money(item.price)}/mo</span>`;
+        customMonthlyOutput.appendChild(line);
+      });
+      customMonthlyOutput.style.display=customMonthlyItems.length?'':'none';
+    }
   });
 
   function buildRow(desc, price){
@@ -239,6 +388,11 @@
     const ppcMgmtOn=getBool('PPCManagement');
     const budget=getNum('adBudget');
     const useBundle=isStarterBundle(status,pages,gbpOn);
+    const customItems=getCustomItems();
+    const customOneTimeItems=customItems.filter(item=>item.type==='one-time');
+    const customMonthlyItems=customItems.filter(item=>item.type==='monthly');
+    const customOneTimeTotal=customOneTimeItems.reduce((sum,item)=>sum+item.price,0);
+    const customMonthlyTotal=customMonthlyItems.reduce((sum,item)=>sum+item.price,0);
 
     let buildP=websiteCreation(status,pages);
     let gbpP=calcGBP(gbpOn);
@@ -253,11 +407,11 @@
     const ppcMgmtP=calcPPCMgmt(ppcMgmtOn,budget);
 
     const fixedOneTime=gbpP+ppcSetupP+seoP+altP+catP+brandP;
-    const oneTimeTotal=buildP+fixedOneTime+photoP;
-    const dueToday=(buildP*.5)+fixedOneTime;
-    const dueComplete=(buildP*.5)+(photoOn?photoP:0);
+    const oneTimeTotal=buildP+fixedOneTime+photoP+customOneTimeTotal;
+    const dueToday=(buildP*.5)+fixedOneTime+(customOneTimeTotal*.5);
+    const dueComplete=(buildP*.5)+(photoOn?photoP:0)+(customOneTimeTotal*.5);
 
-    const monthlyTotal=maintP+ppcMgmtP;
+    const monthlyTotal=maintP+ppcMgmtP+customMonthlyTotal;
 
     const hasOneTime=oneTimeTotal>0;
     const hasMonthly=monthlyTotal>0;
@@ -295,6 +449,7 @@
       if(catOn&&catP>0){body.appendChild(buildRow('Category Structure Audit','$'+money(catP))); }
       if(photoOn&&photoP>0){body.appendChild(buildRow('Photography','$'+money(photoP))); }
       if(brandOn&&brandP>0){body.appendChild(buildRow('Branding','$'+money(brandP))); }
+      customOneTimeItems.forEach(item=>{body.appendChild(buildRow(item.description||'Custom Item','$'+money(item.price)));});
       const totals=document.createElement('div');totals.className='totals-block';
       const t1=document.createElement('div');t1.className='total-line';t1.innerHTML='<span>Total</span><span>$'+money(oneTimeTotal)+'</span>';
       const hr=document.createElement('hr');hr.className='thin-rule';
@@ -311,7 +466,8 @@
       const body=document.createElement('div');body.className='body';
       if(maintOn&&maintP>0){body.appendChild(buildRow('Website Maintenance','$'+money(maintP)+'/mo')); }
       if(ppcMgmtOn&&ppcMgmtP>0){body.appendChild(buildRow('PPC Management'+(budget?(' (on $'+money(budget)+' ad budget)'):'') ,'$'+money(ppcMgmtP)+'/mo')); }
-      const totals=document.createElement('div');totals.className='totals-block';const i1=document.createElement('div');i1.className='indent';i1.style.fontWeight='700';i1.innerHTML='<span>Total Monthly Retainer</span><span>$'+money(maintP+ppcMgmtP)+'/mo</span>';totals.appendChild(i1);
+      customMonthlyItems.forEach(item=>{body.appendChild(buildRow(item.description||'Custom Item','$'+money(item.price)+'/mo'));});
+      const totals=document.createElement('div');totals.className='totals-block';const i1=document.createElement('div');i1.className='indent';i1.style.fontWeight='700';i1.innerHTML='<span>Total Monthly Retainer</span><span>$'+money(monthlyTotal)+'/mo</span>';totals.appendChild(i1);
       card.appendChild(thead);card.appendChild(body);card.appendChild(totals);
       main.appendChild(card);
     }
