@@ -270,6 +270,72 @@
     });
   }
 
+  const customList=document.getElementById('customItemsList');
+  const addCustomItemBtn=document.getElementById('addCustomItemBtn');
+
+  function createCustomItemRow(){
+    const row=document.createElement('div');
+    row.className='custom-item';
+
+    const desc=document.createElement('input');
+    desc.type='text';
+    desc.placeholder='Item description';
+    desc.setAttribute('data-field','description');
+    desc.setAttribute('aria-label','Custom item description');
+
+    const price=document.createElement('input');
+    price.type='number';
+    price.min='0';
+    price.step='0.01';
+    price.placeholder='Price';
+    price.setAttribute('data-field','price');
+    price.setAttribute('aria-label','Custom item price');
+
+    const type=document.createElement('select');
+    type.setAttribute('data-field','type');
+    type.setAttribute('aria-label','Custom item billing type');
+    const optOne=document.createElement('option');
+    optOne.value='one-time';
+    optOne.textContent='One-Time Project Fee';
+    const optMonthly=document.createElement('option');
+    optMonthly.value='monthly';
+    optMonthly.textContent='Monthly Service Fee';
+    type.appendChild(optOne);
+    type.appendChild(optMonthly);
+
+    const remove=document.createElement('button');
+    remove.type='button';
+    remove.className='remove-item';
+    remove.textContent='Remove';
+    remove.setAttribute('aria-label','Remove custom item');
+    remove.addEventListener('click',()=>{row.remove();});
+
+    row.appendChild(desc);
+    row.appendChild(price);
+    row.appendChild(type);
+    row.appendChild(remove);
+
+    return row;
+  }
+
+  function getCustomItems(){
+    if(!customList)return[];
+    return Array.from(customList.querySelectorAll('.custom-item')).map(row=>{
+      const description=(row.querySelector('[data-field="description"]')?.value||'').trim();
+      const priceVal=row.querySelector('[data-field="price"]')?.value||'';
+      const price=parseFloat(priceVal);
+      const type=(row.querySelector('[data-field="type"]')?.value)||'one-time';
+      return {description,price:isNaN(price)?0:price,type};
+    }).filter(item=>item.price>0);
+  }
+
+  if(customList){
+    customList.appendChild(createCustomItemRow());
+    addCustomItemBtn?.addEventListener('click',()=>{
+      customList.appendChild(createCustomItemRow());
+    });
+  }
+
   function websiteCreation(status,p){
     if(status!=='New'||p<=0)return 0;
     if(p<=3)return PRICE_LITE;
